@@ -1,19 +1,28 @@
+import userEvent from '@testing-library/user-event'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 
 export const useAuthStatus = () => {
   const [loggedIn, setLoggedIn] = useState(false)
   const [checkingStatus, setCheckingStatus] = useState(true)
+  const isMounted = useRef(true)
 
   useEffect(() => {
-    const auth = getAuth()
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoggedIn(true)
-      }
-      setCheckingStatus(false)
-    }, [auth])
-  })
+    if (isMounted) {
+      const auth = getAuth()
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setLoggedIn(true)
+        }
+        setCheckingStatus(false)
+      })
+    }
+
+    return () => {
+      isMounted.current = false
+    }
+  }, [isMounted])
+
   return { loggedIn, checkingStatus }
 }
