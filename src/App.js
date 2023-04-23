@@ -8,7 +8,8 @@ import Profile from "./pages/Profile";
 import Forgot from "./pages/Forgot";
 import Offer from "./pages/Offer";
 import Nav from "./Components/Nav";
-import PrivateRoute from "./Components/PrivateRoute";
+import PrivateRoute from './Components/PrivateRoute';
+
 
 
 function App() {

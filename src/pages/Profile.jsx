@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 
 const Profile = () => {
   const auth = getAuth()
+  const [user, setUser] = useState(null)
   // const [loading, setLoading] = useState(true)
   // const [listings, setListings] = useState(null)
   const [changeDetails, setChangeDetails] = useState(false)
