@@ -17,11 +17,15 @@ const Category = () => {
     const fetchListing = async () => {
       try {
         // Get Reference
-        const listingRef = collection(db, 'listing')
+        const listingRef = collection(db, '/listing')
 
         // Create Query
-        const q = query(listingRef, where('type', '==', params.categoryName),
-          orderBy('timestamp', 'desc'), limit(10))
+        const q = query(
+          listingRef,
+          where('type', '==', params.categoryName),
+          orderBy('timestamp', 'desc'),
+          limit(10)
+        )
 
         //  Execute Query
         const querySnap = await getDocs(q)
@@ -29,19 +33,22 @@ const Category = () => {
         let listing = []
 
         querySnap.forEach((doc) => {
-          console.log(doc.data())
-          return listing.push({
+          listing.push({
             id: doc.id,
-            data: doc.data()
+            data: doc.data(),
           })
-
-          setListing(listing)
         })
+
+        setListing(listing)
+        setLoading(false)
       } catch (error) {
         toast.error('Could Not Fetch Listing')
+        setLoading(false)
       }
     }
-  })
+
+    fetchListing()
+  }, [params.categoryName])
 
   return (
     <div className='category'>
@@ -52,7 +59,14 @@ const Category = () => {
       </header>
 
       {loading ? <Spinner /> : listing && listing.length > 0 ? (
-        <div></div>) : (<p>No Listing for {params.categoryName}</p>)
+        <div><main>
+          <ul className='categoryListings'>
+            {listing.map((listings) => (
+              <h3 key={listing.id}>{listings.data.name}</h3>
+
+            ))}
+          </ul>
+        </main></div>) : (<p>No Listing for {params.categoryName}</p>)
       }
     </div>
   )

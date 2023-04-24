@@ -19,7 +19,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Explore />} />
-          <Route path="/category/rent" element={<Category />} />
+          <Route path="/category/:categoryName" element={<Category />} />
           <Route path='/offers' element={<Offer />} />
           <Route path='/profile' element={<PrivateRoute />}>
             <Route path='/profile' element={<Profile />} />
