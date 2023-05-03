@@ -52,7 +52,7 @@ function Category() {
 
         setListings(listings)
         setLoading(false)
-        toast.error('Fetched listings')
+        toast.success('Fetched listings')
       } catch (error) {
         toast.error('Could not fetch listings')
         setLoading(false)
@@ -63,7 +63,7 @@ function Category() {
   }, [params.categoryName])
 
   // Pagination / Load More
-  const onFetchMoreListings = async () => {
+  const more = async () => {
     try {
       // Get reference
       const listingsRef = collection(db, 'listing')
@@ -129,7 +129,7 @@ function Category() {
           <br />
           <br />
           {lastFetchedListing && (
-            <p className='loadMore' onClick={onFetchMoreListings}>
+              <p className='loadMore' onClick={more}>
               Load More
             </p>
           )}
