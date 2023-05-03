@@ -1,76 +1,144 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { collection, getDoc, query, where, orderBy, limit, startAfter, getDocs } from 'firebase/firestore'
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
+  startAfter,
+} from 'firebase/firestore'
 import { db } from '../firebase.config'
 import { toast } from 'react-toastify'
-import Spinner from "../Components/Spinner"
-// import { async } from '@firebase/util'
+import Spinner from '../Components/Spinner'
+import ListingItem from '../Components/ListingItem'
 
-
-const Category = () => {
-  const [listing, setListing] = useState(null)
+function Category() {
+  const [listings, setListings] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [lastFetchedListing, setLastFetchedListing] = useState(null)
 
   const params = useParams()
 
   useEffect(() => {
-    const fetchListing = async () => {
+    const fetchListings = async () => {
       try {
-        // Get Reference
-        const listingRef = collection(db, '/listing')
+        // Get reference
+        const listingsRef = collection(db, 'listing')
 
-        // Create Query
+        // Create a query
         const q = query(
-          listingRef,
+          listingsRef,
           where('type', '==', params.categoryName),
           orderBy('timestamp', 'desc'),
           limit(10)
         )
 
-        //  Execute Query
+        // Execute query
         const querySnap = await getDocs(q)
 
-        let listing = []
+        const lastVisible = querySnap.docs[querySnap.docs.length - 1]
+        setLastFetchedListing(lastVisible)
+
+        const listings = []
 
         querySnap.forEach((doc) => {
-          listing.push({
+          return listings.push({
             id: doc.id,
             data: doc.data(),
           })
         })
 
-        setListing(listing)
+        setListings(listings)
         setLoading(false)
+        toast.error('Fetched listings')
       } catch (error) {
-        toast.error('Could Not Fetch Listing')
+        toast.error('Could not fetch listings')
         setLoading(false)
       }
     }
 
-    fetchListing()
+    fetchListings()
   }, [params.categoryName])
+
+  // Pagination / Load More
+  const onFetchMoreListings = async () => {
+    try {
+      // Get reference
+      const listingsRef = collection(db, 'listing')
+
+      // Create a query
+      const q = query(
+        listingsRef,
+        where('type', '==', params.categoryName),
+        orderBy('timestamp', 'desc'),
+        startAfter(lastFetchedListing),
+        limit(10)
+      )
+
+      // Execute query
+      const querySnap = await getDocs(q)
+
+      const lastVisible = querySnap.docs[querySnap.docs.length - 1]
+      setLastFetchedListing(lastVisible)
+
+      const listings = []
+
+      querySnap.forEach((doc) => {
+        listings.push({
+          id: doc.id,
+          data: doc.data(),
+        })
+      })
+
+      setListings((prevState) => [...prevState, ...listings])
+      setLoading(false)
+    } catch (error) {
+      toast.error('Could not fetch listings')
+      console.log(error)
+    }
+  }
 
   return (
     <div className='category'>
       <header>
         <p className='pageHeader'>
-          {params.categoryName == 'rent' ? 'Place for rent' : 'Place for sales'}
+          {params.categoryName === 'rent'
+            ? 'Car to rent'
+            : 'Car for sale'}
         </p>
       </header>
 
-      {loading ? <Spinner /> : listing && listing.length > 0 ? (
-        <div><main>
-          <ul className='categoryListings'>
-            {listing.map((listings) => (
-              <h3 key={listing.id}>{listings.data.name}</h3>
+      {loading ? (
+        <Spinner />
+      ) : listings && listings.length > 0 ? (
+        <>
+          <main>
+            <ul className='categoryListings'>
+                {listings.map((listing) => (
+                  <ListingItem
+                    listing={listing.data}
+                    id={listing.id}
+                    key={listing.id}
+                  />
+                ))}
+              </ul>
+          </main>
 
-            ))}
-          </ul>
-        </main></div>) : (<p>No Listing for {params.categoryName}</p>)
-      }
+          <br />
+          <br />
+          {lastFetchedListing && (
+            <p className='loadMore' onClick={onFetchMoreListings}>
+              Load More
+            </p>
+          )}
+        </>
+      ) : (
+        <p>No listings for {params.categoryName}</p>
+      )}
     </div>
   )
 }
-
 
 export default Category
