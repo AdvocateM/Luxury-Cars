@@ -77,7 +77,7 @@ const Profile = () => {
           </form>
         </div>
 
-        <Link to='/Create-Listing' className='createListing' ><img src={homeIcon}></img> <p>Sell your Car</p><img src={arrowRight}></img></Link>
+        <Link to='/Create-Listing' className='createListing' ><img src={homeIcon}></img> <p>Sell or rent your home</p><img src={arrowRight}></img></Link>
       </main>
     </div>
   )
