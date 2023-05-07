@@ -5,6 +5,11 @@ import bedIcon from '../assets/svg/bedIcon.svg'
 import bathtubIcon from '../assets/svg/bathtubIcon.svg'
 
 function ListingItem({ listing, id, onEdit, onDelete }) {
+  if (!listing.imgUrls) {
+    // Handle the case when imgUrls is undefined
+    return null; // or render a placeholder image/error message
+  }
+
   return (
     <li className='categoryListing'>
       <Link
@@ -12,7 +17,7 @@ function ListingItem({ listing, id, onEdit, onDelete }) {
         className='categoryListingLink'
       >
         <img
-          src={listing.imageUrls[0]}
+          src={listing.imgUrls[0]}
           alt={listing.name}
           className='categoryListingImg'
         />
