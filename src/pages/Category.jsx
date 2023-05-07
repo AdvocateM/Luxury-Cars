@@ -52,10 +52,8 @@ function Category() {
 
         setListings(listings)
         setLoading(false)
-        toast.success('Fetched listings')
       } catch (error) {
         toast.error('Could not fetch listings')
-        setLoading(false)
       }
     }
 
@@ -63,7 +61,7 @@ function Category() {
   }, [params.categoryName])
 
   // Pagination / Load More
-  const more = async () => {
+  const onFetchMoreListings = async () => {
     try {
       // Get reference
       const listingsRef = collection(db, 'listing')
@@ -86,7 +84,7 @@ function Category() {
       const listings = []
 
       querySnap.forEach((doc) => {
-        listings.push({
+        return listings.push({
           id: doc.id,
           data: doc.data(),
         })
@@ -96,7 +94,6 @@ function Category() {
       setLoading(false)
     } catch (error) {
       toast.error('Could not fetch listings')
-      console.log(error)
     }
   }
 
@@ -105,8 +102,8 @@ function Category() {
       <header>
         <p className='pageHeader'>
           {params.categoryName === 'rent'
-            ? 'Car to rent'
-            : 'Car for sale'}
+            ? 'Places for rent'
+            : 'Places for sale'}
         </p>
       </header>
 
@@ -129,7 +126,7 @@ function Category() {
           <br />
           <br />
           {lastFetchedListing && (
-              <p className='loadMore' onClick={more}>
+              <p className='loadMore' onClick={onFetchMoreListings}>
               Load More
             </p>
           )}

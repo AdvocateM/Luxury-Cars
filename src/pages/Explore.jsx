@@ -17,12 +17,12 @@ const Explore = () => {
         <div className='exploreCategories'>
           <Link to='/category/rent'>
             <p className='exploreCategoryHeading'>Car for rent</p>
-            <img src='https://images.unsplash.com/photo-1494976388531-d1058494cdd8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8Y2Fyc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60' alt='rent' className='exploreCategoryImg' />
+            <img src='https://cf.bstatic.com/xdata/images/hotel/max1024x768/436327413.jpg?k=e61190b16650cdfd58796f04b71cfd75f81b74622ba5e51fdbb7014778854976&o=&hp=1' alt='rent' className='exploreCategoryImg' />
           </Link>
 
           <Link to='/category/sales'>
             <p className='exploreCategoryHeading'>Car for Sales</p>
-            <img src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80' alt='sales' className='exploreCategoryImg' />
+            <img src='https://cf.bstatic.com/xdata/images/hotel/max1024x768/223275789.jpg?k=3a70489f8c4c84887435c8cecfc3b6df5f5ad29a839c3851005cf3d581344f7c&o=&hp=1' alt='sales' className='exploreCategoryImg' />
           </Link>
         </div>
       </main>
