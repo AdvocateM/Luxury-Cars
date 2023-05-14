@@ -50,7 +50,7 @@ function CreateListing() {
   } = formData
 
   const auth = getAuth()
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const isMounted = useRef(true)
 
   useEffect(() => {
@@ -59,7 +59,7 @@ function CreateListing() {
         if (user) {
           setFormData({ ...formData, userRef: user.uid })
         } else {
-          navigate('/sign-in')
+          console.log('/sign-in')
         }
       })
     }
@@ -223,33 +223,36 @@ function CreateListing() {
 
       <main>
         <form onSubmit={onSubmit}>
-          <label className='formLabel'>Sell / Rent</label>
-          <div className='formButtons'>
+          <label className="formLabel" htmlFor="type">
+            Sell / Rent
+          </label>
+          <div className="formButtons">
             <button
-              type='button'
-              className={type === 'sale' ? 'formButtonActive' : 'formButton'}
-              id='type'
-              value='sale'
+              type="button"
+              className={type === "sale" ? "formButtonActive" : "formButton"}
+              id="type"
+              value="sale"
               onClick={onMutate}
             >
               Sell
             </button>
             <button
-              type='button'
-              className={type === 'rent' ? 'formButtonActive' : 'formButton'}
-              id='type'
-              value='rent'
+              type="button"
+              className={type === "rent" ? "formButtonActive" : "formButton"}
+              id="type"
+              value="rent"
               onClick={onMutate}
             >
               Rent
             </button>
           </div>
 
-          <label className='formLabel'>Name</label>
+
+          <label htmlFor="Name" className='formLabel'>Name</label>
           <input
             className='formInputName'
             type='text'
-            id='name'
+            id='Name'
             value={name}
             onChange={onMutate}
             maxLength='32'
@@ -259,7 +262,7 @@ function CreateListing() {
 
           <div className='formRooms flex'>
             <div>
-              <label className='formLabel'>Bedrooms</label>
+              <label className='formLabel' htmlFor="Bedrooms">Bedrooms</label>
               <input
                 className='formInputSmall'
                 type='number'
@@ -272,7 +275,7 @@ function CreateListing() {
               />
             </div>
             <div>
-              <label className='formLabel'>Bathrooms</label>
+              <label className='formLabel' htmlFor="Bathrooms">Bathrooms</label>
               <input
                 className='formInputSmall'
                 type='number'
@@ -286,7 +289,7 @@ function CreateListing() {
             </div>
           </div>
 
-          <label className='formLabel'>Parking spot</label>
+          <label className='formLabel' htmlFor="Parking">Parking spot</label>
           <div className='formButtons'>
             <button
               className={parking ? 'formButtonActive' : 'formButton'}
@@ -312,7 +315,7 @@ function CreateListing() {
             </button>
           </div>
 
-          <label className='formLabel'>Furnished</label>
+          <label className='formLabel' htmlFor="Furnished">Furnished</label>
           <div className='formButtons'>
             <button
               className={furnished ? 'formButtonActive' : 'formButton'}
@@ -338,7 +341,7 @@ function CreateListing() {
             </button>
           </div>
 
-          <label className='formLabel'>Address</label>
+          <label className='formLabel' htmlFor="Address">Address</label>
           <textarea
             className='formInputAddress'
             type='text'
@@ -351,7 +354,7 @@ function CreateListing() {
           {!geolocationEnabled && (
             <div className='formLatLng flex'>
               <div>
-                <label className='formLabel'>Latitude</label>
+                <label className='formLabel' htmlFor="Latitude">Latitude</label>
                 <input
                   className='formInputSmall'
                   type='number'
@@ -362,7 +365,7 @@ function CreateListing() {
                 />
               </div>
               <div>
-                <label className='formLabel'>Longitude</label>
+                <label className='formLabel' htmlFor="Longitude">Longitude</label>
                 <input
                   className='formInputSmall'
                   type='number'
@@ -375,7 +378,7 @@ function CreateListing() {
             </div>
           )}
 
-          <label className='formLabel'>Offer</label>
+          <label className='formLabel' htmlFor="Offer">Offer</label>
           <div className='formButtons'>
             <button
               className={offer ? 'formButtonActive' : 'formButton'}
@@ -399,7 +402,7 @@ function CreateListing() {
             </button>
           </div>
 
-          <label className='formLabel'>Regular Price</label>
+          <label className='formLabel' htmlFor="Regular">Regular Price</label>
           <div className='formPriceDiv'>
             <input
               className='formInputSmall'
@@ -411,12 +414,12 @@ function CreateListing() {
               max='750000000'
               required
             />
-            {type === 'rent' && <p className='formPriceText'>R / Month</p>}
+            {type === 'rent' && <p className='formPriceText' htmlFor="Month">R / Month</p>}
           </div>
 
           {offer && (
             <>
-              <label className='formLabel'>Discounted Price</label>
+              <label className='formLabel' htmlFor="Discounted">Discounted Price</label>
               <input
                 className='formInputSmall'
                 type='number'
@@ -430,7 +433,7 @@ function CreateListing() {
             </>
           )}
 
-          <label className='formLabel'>Images</label>
+          <label className='formLabel' htmlFor="Images">Images</label>
           <p className='imagesInfo'>
             The first image will be the cover (max 6).
           </p>

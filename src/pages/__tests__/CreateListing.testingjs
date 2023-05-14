@@ -1,0 +1,46 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+import CreateListing from '../CreateListing';
+import '@testing-library/jest-dom/extend-expect';
+
+
+test('renders CreateListing component', () => {
+  render(<CreateListing />);
+
+  // Check if the form elements are rendered
+  expect(screen.getByLabelText(/Sell \/ Rent/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Name/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Bedrooms/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Bathrooms/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Parking spot/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Furnished/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Address/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Offer/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Regular Price/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Discounted Price/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Images/i)).toBeInTheDocument();
+});
+
+test('submits the form with valid data', () => {
+  render(<CreateListing />);
+
+  // Fill in the form
+  fireEvent.change(screen.getByLabelText(/Name/i), { target: { value: 'Test Listing' } });
+  fireEvent.change(screen.getByLabelText(/Bedrooms/i), { target: { value: '2' } });
+  fireEvent.change(screen.getByLabelText(/Bathrooms/i), { target: { value: '2' } });
+  fireEvent.click(screen.getByText(/Yes/i)); // Select parking spot
+  fireEvent.click(screen.getByText(/Yes/i)); // Select furnished
+  fireEvent.change(screen.getByLabelText(/Address/i), { target: { value: '123 Test St' } });
+  fireEvent.click(screen.getByText(/Yes/i)); // Select offer
+  fireEvent.change(screen.getByLabelText(/Regular Price/i), { target: { value: '500' } });
+  fireEvent.change(screen.getByLabelText(/Discounted Price/i), { target: { value: '400' } });
+  fireEvent.change(screen.getByLabelText(/Images/i), { target: { files: [new File([], 'test.jpg')] } });
+
+  // Submit the form
+  fireEvent.submit(screen.getByRole('button', { name: /Create Listing/i }));
+
+  // Check if the loading spinner is rendered
+  expect(screen.getByTestId('spinner')).toBeInTheDocument();
+
+  // You can add more assertions based on the expected behavior after form submission
+  // For example, checking if the success message is displayed or if the navigation is triggered.
+});

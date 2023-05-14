@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
 import Explore from "./pages/Explore";
@@ -17,7 +17,7 @@ import Category from "./pages/Category";
 function App() {
   return (
     <div className="bg">
-      <Router>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Explore />} />
           <Route path="/category/:categoryName" element={<Category />} />
@@ -28,12 +28,11 @@ function App() {
           <Route path='/sign_in' element={<Signin />} />
           <Route path='/sign_up' element={<Signup />} />
           <Route path='/forgot_password' element={<Forgot />} />
-
-          <Route path='/Create-Listing' element={<CreateListing />} /> 
+          <Route path='/Create-Listing' element={<CreateListing />} />
         </Routes>
         {/* Navbar */}
         <Nav />
-      </Router>
+      </BrowserRouter>
       <ToastContainer />
     </div>
   );
