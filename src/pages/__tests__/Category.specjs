@@ -1,26 +1,27 @@
-import React from 'react'
-import { render, waitFor } from '@testing-library/react'
-import { MemoryRouter, Route } from 'react-router-dom'
-import { initializeTestEnvironment, clearFirestoreData } from '@firebase/testing'
-import { db } from '../../firebase.config'
-import Category from '../Category'
+// Add more test cases to cover different scenarios and functionality
+import React from 'react';
+import { render, waitFor } from '@testing-library/react';
+import { MemoryRouter, Route } from 'react-router-dom';
+import { initializeTestEnvironment, clearFirestoreData } from '@firebase/rules-unit-testing';
+import { db } from '../../firebase.config';
+import Category from '../Category';
 
 // Initialize Firebase emulator
-const firebaseApp = initializeTestEnvironment({ projectId: 'your-project-id' })
+const firebaseApp = initializeTestEnvironment({ projectId: 'vip-property-d9622' });
 
 beforeEach(async () => {
   // Clear Firestore data before each test
-  await clearFirestoreData({ projectId: 'your-project-id' })
-})
+  await clearFirestoreData({ projectId: 'vip-property-d9622' });
+});
 
 afterAll(async () => {
   // Delete the Firebase app and stop the emulator after all tests
-  await firebaseApp.delete()
-})
+  await firebaseApp.delete();
+});
 
 test('renders category page with listings', async () => {
   // Mock the category name parameter
-  const categoryName = 'rent'
+  const categoryName = 'rent';
 
   // Create a sample listing
   const sampleListing = {
@@ -29,11 +30,11 @@ test('renders category page with listings', async () => {
       title: 'Sample Listing',
       description: 'This is a sample listing',
     },
-  }
+  };
 
   // Add the sample listing to Firestore
-  const listingsRef = db.collection('listing')
-  await listingsRef.doc(sampleListing.id).set(sampleListing.data)
+  const listingsRef = db.collection('listing');
+  await listingsRef.doc(sampleListing.id).set(sampleListing.data);
 
   // Render the Category component with the mocked category name
   const { getByText } = render(
@@ -42,13 +43,13 @@ test('renders category page with listings', async () => {
         <Category />
       </Route>
     </MemoryRouter>
-  )
+  );
 
   // Wait for the listings to be fetched and rendered
   await waitFor(() => {
-    expect(getByText(sampleListing.data.title)).toBeInTheDocument()
-    expect(getByText(sampleListing.data.description)).toBeInTheDocument()
-  })
-})
+    expect(getByText(sampleListing.data.title)).toBeInTheDocument();
+    expect(getByText(sampleListing.data.description)).toBeInTheDocument();
+  });
+});
 
 // Add more test cases to cover different scenarios and functionality
