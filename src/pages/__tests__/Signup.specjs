@@ -3,6 +3,38 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Signup from '../Signup';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+
+jest.mock('firebase/app', () => {
+  return {
+    __esModule: true,
+    initializeApp: jest.fn(),
+  };
+});
+
+jest.mock('firebase/firestore', () => {
+  return {
+    __esModule: true,
+    getFirestore: jest.fn(),
+  };
+});
+
+// Mock the Firebase app and Firestore instance
+const firebaseApp = initializeApp.mockImplementation(() => ({
+  // mock the methods you need from the Firebase app
+}));
+
+const firestore = getFirestore.mockImplementation(() => ({
+  // mock the methods you need from Firestore
+}));
+
+// Mock the API call function
+const mockAPICall = jest.fn(
+
+);
+// Mock the state setter function
+const mockSetState = jest.fn();
 
 describe('Signup Component', () => {
   test('renders the Signup form', () => {
@@ -46,6 +78,7 @@ describe('Signup Component', () => {
     fireEvent.click(screen.getByText('Sign Up'));
 
     // Verify form submission
-    // You can add assertions based on your specific implementation
+    expect(mockAPICall).toHaveBeenCalledTimes(1);
+    expect(mockSetState).toHaveBeenCalledWith(expectedState);
   });
 });

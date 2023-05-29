@@ -1,0 +1,143 @@
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { getAuth, updateProfile } from 'firebase/auth';
+import { updateDoc, doc } from 'firebase/firestore';
+import { db } from '../../firebase.config';
+import { toast } from 'react-toastify';
+import Profile from '../Profile';
+import { getFirestore } from 'firebase/firestore';
+
+
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn(),
+  updateProfile: jest.fn(),
+}));
+
+jest.mock('firebase/firestore', () => ({
+  updateDoc: jest.fn(),
+  doc: jest.fn(),
+}));
+
+jest.mock('react-toastify', () => ({
+  toast: {
+    error: jest.fn(),
+  },
+}));
+
+describe('Profile Component', () => {
+  const mockAuth = {
+    currentUser: {
+      email: 'test@example.com',
+      displayName: 'Test User',
+      uid: 'test-uid',
+    },
+    signOut: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getAuth.mockReturnValue(mockAuth);
+  });
+
+  test('renders the profile details', () => {
+    render(
+      <Router>
+        <Profile />
+      </Router>
+    );
+
+    // Verify the presence of profile details
+    expect(screen.getByText('My Profile')).toBeInTheDocument();
+    expect(screen.getByText('Logout')).toBeInTheDocument();
+    expect(screen.getByText('Personal Details')).toBeInTheDocument();
+    expect(screen.getByText('Change')).toBeInTheDocument();
+    expect(screen.getByDisplayValue(mockAuth.currentUser.displayName)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(mockAuth.currentUser.email)).toBeInTheDocument();
+    expect(screen.getByText('Sell or rent your home')).toBeInTheDocument();
+  });
+
+  test('allows changing and updating profile details', async () => {
+    render(
+      <Router>
+        <Profile />
+      </Router>
+    );
+
+    // Simulate clicking on "Change" to enable editing
+    fireEvent.click(screen.getByText('Change'));
+
+    // Simulate changing the name
+    const newName = 'New Name';
+    fireEvent.change(screen.getByDisplayValue(mockAuth.currentUser.displayName), {
+      target: { value: newName },
+    });
+
+    // Simulate submitting the form
+    fireEvent.click(screen.getByText('Done'));
+
+    // Verify profile update function calls
+    expect(updateProfile).toHaveBeenCalledWith(mockAuth.currentUser, {
+      displayName: newName,
+    });
+    expect(doc).toHaveBeenCalledWith(db, 'users', mockAuth.currentUser.uid);
+    expect(updateDoc).toHaveBeenCalledWith(expect.any(Object), { name: newName });
+
+    // Verify toast message
+    expect(toast.error).not.toHaveBeenCalled();
+
+    // Verify the updated name is displayed
+    expect(screen.getByDisplayValue(newName)).toBeInTheDocument();
+  });
+
+  test('handles errors during profile update', async () => {
+    const errorMessage = 'Could Not Update profile details';
+    updateProfile.mockRejectedValueOnce(new Error(errorMessage));
+
+    render(
+      <Router>
+        <Profile />
+      </Router>
+    );
+
+    // Simulate clicking on "Change" to enable editing
+    fireEvent.click(screen.getByText('Change'));
+
+    // Simulate changing the name
+    const newName = 'New Name';
+    fireEvent.change(screen.getByDisplayValue(mockAuth.currentUser.displayName), {
+      target: { value: newName },
+    });
+
+    // Simulate submitting the form
+    fireEvent.click(screen.getByText('Done'));
+
+    // Verify profile update function calls
+    expect(updateProfile).toHaveBeenCalledWith(mockAuth.currentUser, {
+      displayName: newName,
+    });
+    expect(doc).not.toHaveBeenCalled();
+    expect(updateDoc).not.toHaveBeenCalled();
+
+    // Verify toast message
+    expect(toast.error).toHaveBeenCalledWith(errorMessage);
+
+    // Verify the name is not updated
+    expect(screen.getByDisplayValue(mockAuth.currentUser.displayName)).toBeInTheDocument();
+  });
+
+  test('handles clicking on logout', () => {
+    render(
+      <Router>
+        <Profile />
+      </Router>
+    );
+
+    // Simulate clicking on "Logout"
+    fireEvent.click(screen.getByText('Logout'));
+
+    // Verify sign out function call
+    expect(mockAuth.signOut).toHaveBeenCalled();
+  });
+});
